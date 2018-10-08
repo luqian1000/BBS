@@ -18,6 +18,7 @@ public class InsertColApi {
     @ResponseBody
     @RequestMapping(value = "/api/insert/col")
     public Object insertCol(String essayid, String userid, Model model){
+        int test=2;
         System.out.println("°¢·É");
         System.out.println("¹þ¹þ"+userid);
         JsonResult result=null;
