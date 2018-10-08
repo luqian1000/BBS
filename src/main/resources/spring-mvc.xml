@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+">
+    <!-- 自动扫描的包名 -->
+    <context:component-scan base-package="com.taru.bbs.controller" ></context:component-scan>
+    <context:component-scan base-package="com.taru.bbs.api" ></context:component-scan>
+    <!-- 默认的注解映射的支持 -->
+    <mvc:annotation-driven />
+
+    <!-- 视图(JSP)解释类 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+        <!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑 -->
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+    </bean>
+    <!-- 对静态资源文件的访问 方案二 （二选一）  有三种方案  可以激活Tomcat的defaultServlet来处理静态文件     -->
+    <mvc:resources mapping="/static/images/**" location="/static/images/" cache-period="31556926"/>
+    <mvc:resources mapping="/static/js/**" location="/static/js/" cache-period="31556926"/>
+    <mvc:resources mapping="/static/css/**" location="/static/css/" cache-period="31556926"/>
+    <!-- API 接口跨域配置 -->
+    <mvc:cors>
+        <mvc:mapping path="/api/**"
+                     allowed-origins="*"
+                     allowed-methods="POST,GET,OPTIONS,DELETE,PUT"
+                     allowed-headers="Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+                     allow-credentials="true" />
+    </mvc:cors>
+<!--拦截器拦截的方式是根据@RequestMapping里的value ，这时候就要求在编写控制器时value的名字要有规律-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--拦截控制器里contorl开头的所有接口-->
+            <mvc:mapping path="/control/**" />
+            <!--不拦截contorl下的login 即不拦截登录-->
+            <mvc:exclude-mapping path="/control/login/*"/>
+            <mvc:exclude-mapping path="/control/register/*"/>
+            <!--拦截器的方法位置-->
+            <bean class="com.taru.bbs.interceptors.AuthInterceptors"></bean>
+        </mvc:interceptor>
+
+    </mvc:interceptors>
+    <!-- 多文件上传视图解析器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <property name="maxUploadSize" value="10485760000"></property>
+        <!-- 临时文件小于阈值 在内存中驻留，超过阈值 移动到磁盘中-->
+        <property name="maxInMemorySize" value="40960"></property>
+    </bean>
+
+    <!--声明式异常视图解析器 -->
+    <bean  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 定义默认的异常处理页面   error  表示的视图的名称  -->
+        <property name="defaultErrorView" value="error"/>
+        <!-- 自定义需要特殊处理的异常，这是重要点 -->
+        <property name="exceptionMappings">
+            <props>
+                <prop key="com.taru.bbs.exception.CustomException">customError</prop>
+                <prop key="com.taru.exception.OrderException">orderError</prop>
+            </props>
+            <!-- 还可以定义其他的自定义异常 -->
+        </property>
+        <!-- 省略日志-->
+    </bean>
+
+<!--配置上传图片路径使用IOC构造器传参-->
+    <bean id="upload" class="java.lang.String">
+        <constructor-arg name="original" value="/home/app/image"/>
+    </bean>
+
+</beans>

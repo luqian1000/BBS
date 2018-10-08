@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向mapper 包-->
+<mapper namespace="com.taru.bbs.mapper.EssayMapper">
+    <!--返回类型的映射-->
+    <resultMap id="EssayResultMap" type="com.taru.bbs.pojo.Essay">
+        <id column="essay_id" property="essayid"></id>
+        <result column="essay_category_id" property="essaycategoryid"></result>
+        <result column="essay_clicked" property="essayclicked"></result>
+        <result column="essay_name" property="essayname"></result>
+        <result column="essay_user_id" property="essayuserid"></result>
+        <result column="essay_text" property="essaytext"></result>
+        <result column="essay_data_time" property="essaydatatime"></result>
+        <result column="essay_status" property="essaystatus"></result>
+        <association property="user" javaType="com.taru.bbs.pojo.User">
+            <id column="user_id" property="id"></id>
+            <result column="user_name" property="username"></result>
+            <result column="user_password" property="password"></result>
+            <result column="user_telphone" property="telphone"></result>
+            <result column="user_data_time" property="userdatatime"></result>
+            <result column="user_photo" property="photo"></result>
+        </association>
+    </resultMap>
+    <!--sql片段-->
+    <sql id="UserSql">
+        user_id,user_name,user_password,user_telphone,user_data_time,user_photo
+    </sql>
+    <!--sql片段-->
+    <sql id="EssaySql">
+        essay_id,essay_name,essay_user_id,essay_category_id,essay_clicked,essay_text,essay_data_time,essay_status
+    </sql>
+    <!--sql片段-->
+    <sql id="CommentSql">
+        comment_id,comment_fa_id,comment_user_id,comment_text,comment_essay_id,comment_status,comment_data_time
+    </sql>
+
+    <!--查询全部贴子 BBSsssssssssssssssssssssssss-->
+    <select id="selectessay" resultMap="EssayResultMap">
+        select *from essay left join user on essay_user_id=user_id where essay_status=1
+    </select>
+
+    <!--通过EssayID查询贴子详情 BBSsssssssssssssssssssssssss&ndash;&gt;-->
+    <select id="selectOneEssay" resultType="java.util.HashMap">
+    select e.*,u.*,c.*,ca.*,s.user_name comment_user_name,
+    s.user_id comment_user_id1,
+    s.user_photo comment_user_photo from essay e
+    left join user u on e.essay_user_id=u.user_id
+    left join comment c on e.essay_id=c.comment_essay_id
+    left join user s on s.user_id=comment_user_id
+    left join category ca on category_id=essay_category_id
+    WHERE essay_id=#{essayid,jdbcType=VARCHAR}
+    </select>
+    <!--&lt;!&ndash;发帖&ndash;&gt;-->
+    <insert id="insertEassy" parameterType="com.taru.bbs.pojo.Essay">
+        insert into essay values (uuid(),
+        #{essaycategoryid,jdbcType=VARCHAR},
+        #{essayname,jdbcType=VARCHAR},
+         #{essaytext,jdbcType=VARCHAR},
+         1,#{essayuserid,jdbcType=VARCHAR},1,NOW())
+    </insert>
+
+    <!--根据贴子名称 用户ID，查出刚发的贴子的id-->
+    <select id="selectEssayId"  resultType="java.lang.String" >
+        select essay_id from essay where essay_user_id=#{esaayuserid} and essay_data_time in
+    (select max(essay_data_time) from essay  where essay_user_id=#{esaayuserid} and essay_name =#{essayname})
+    </select>
+    <!--查询贴子按照点赞量-->
+    <select id ="selectEssayClick" resultMap="EssayResultMap">
+        select *from essay left join user on essay_user_id=user_id where essay_status=1 order by (essay_clicked+0) desc
+    </select>
+    <!--查询贴子按照最新发布时间-->
+    <select id ="selectEssayData" resultMap="EssayResultMap">
+        select *from essay left join user on essay_user_id=user_id where essay_status=1 order by essay_data_time desc
+    </select>
+    <!--查询贴子按照类别-->
+    <select id ="selectCate" resultType="java.util.HashMap">
+       select *from essay left join user on essay_user_id=user_id left join category on essay_category_id=category_id where essay_status=1 and  essay_category_id=#{eid,jdbcType=VARCHAR}
+    </select>
+    <!--评论-->
+    <insert id="commentInsert" parameterType="com.taru.bbs.pojo.Comment">
+    insert INTO comment values(UUID(),#{fatherid},#{userid},#{text},#{essayid},1,now())
+    </insert>
+    <!--更新点击量-->
+    <update id="updateClick" >
+        update essay set essay_clicked=essay_clicked +1 where essay_id=#{essayid}
+    </update>
+    <!--模糊搜索-->
+    <select id="selectFuzzy" resultType="java.util.HashMap">
+        <bind name="essayname" value="'%'+_parameter+'%'"></bind>
+        select *from essay left join user on user_id=essay_user_id left join category on category_id=essay_category_id where  essay_name like #{essayname}
+    </select>
+    <!--<resultMap id="CommentResultMap" type="com.taru.bbs.pojo.Comment">-->
+        <!--<id column="comment_id" property="commentid"></id>-->
+        <!--<result column="comment_fa_id" property="commentfaid"></result>-->
+        <!--<result column="comment_user_id" property="commentuserid"></result>-->
+        <!--<result column="comment_text" property="commenttext"></result>-->
+        <!--<result column="comment_essayid" property="commentessayid"></result>-->
+        <!--<result column="comment_status" property="commentstatus"></result>-->
+    <!--</resultMap>-->
+
+    <!--&lt;!&ndash;注册 bbs&ndash;&gt;-->
+    <!--<insert id="register" parameterType="com.taru.bbs.pojo.User">-->
+        <!--insert into user (USER_ID,USER_NAME,USER_PASSWORD,USER_PHOTO,USER_TELPHONE) values (uuid() ,-->
+        <!--#{username,jdbcType=VARCHAR},-->
+        <!--#{password},-->
+        <!--#{photo},-->
+        <!--<if test="telphone!=null">-->
+            <!--#{telphone,jdbcType=VARCHAR}-->
+        <!--</if>)-->
+    <!--</insert>-->
+    <!--resultMap返回结果的映射  查询用户bbs-->
+    <!--<select id="selectuser" resultMap="UserResultMap" >-->
+        <!--select-->
+        <!--<include refid="UserSql"></include>-->
+        <!--from user where  user_name=#{username,jdbcType=VARCHAR}-->
+    <!--</select>-->
+
+
+
+
+
+
+    <!--<select id="selectByIdWithessay" resultMap="UserResultMap">-->
+    <!--select * from essay left join user on essay_user_id=user_id where user_id=#{userid,jdbcType=VARCHAR}-->
+<!--</select>-->
+    <!--&lt;!&ndash;resultMap返回结果的映射  &ndash;&gt;-->
+    <!--<select id="select" resultMap="UserResultMap" >-->
+        <!--select *  from  user-->
+    <!--</select>-->
+    <!--&lt;!&ndash;resultMap返回结果的映射&ndash;&gt;-->
+    <!--&lt;!&ndash;refid包含UserSql片段&ndash;&gt;-->
+    <!--<select id="select1" resultMap="UserResultMap" >-->
+        <!--select-->
+        <!--<include refid="UserSql"></include>-->
+        <!--from  user-->
+    <!--</select>-->
+    <!--&lt;!&ndash;别名映射&ndash;&gt;-->
+    <!--<select id="select4" resultType="HashMap" >-->
+        <!--select-->
+        <!--user_id as id,user_name as username,user_password as password,user_telphone as telphone,user_photo as photo-->
+        <!--from  user-->
+    <!--</select>-->
+    <!--&lt;!&ndash;别名映射&ndash;&gt;-->
+    <!--<select id="select5" resultType="com.taru.bbs.pojo.User" >-->
+        <!--select-->
+        <!--user_id as id,user_name as username,user_password as password,user_telphone as telphone,user_photo as photo-->
+        <!--from  user-->
+    <!--</select>-->
+    <!--&lt;!&ndash;resultMap返回结果的映射 查询带传参传单值&ndash;&gt;-->
+    <!--<select id="select2" resultMap="UserResultMap" >-->
+        <!--select-->
+        <!--<include refid="UserSql"></include>-->
+        <!--&#45;&#45;         #号里的属性名为实体类的属性名-->
+        <!--from  user where user_name=#{username,jdbcType=VARCHAR}-->
+    <!--</select>-->
+    <!--&lt;!&ndash;resultMap返回结果的映射 查询带传参传多值&ndash;&gt;-->
+    <!--<select id="select3" resultMap="UserResultMap" >-->
+        <!--select-->
+        <!--<include refid="UserSql"></include>-->
+        <!--from  user where user_name=#{username,jdbcType=VARCHAR} and user_password=#{password,jdbcType=VARCHAR}-->
+    <!--</select>-->
+    <!--<insert id="insert" parameterType="com.taru.bbs.pojo.User">-->
+        <!--insert into user (-->
+        <!--<if test="id !=null">-->
+            <!--user_id,-->
+        <!--</if>-->
+        <!--user_name,-->
+        <!--user_password,-->
+        <!--<if test="telphone!=null">-->
+            <!--user_telphone,-->
+        <!--</if>-->
+        <!--user_photo)-->
+        <!--value (-->
+        <!--<if test="id!=null">-->
+            <!--#{id},-->
+        <!--</if>-->
+        <!--#{username,jdbcType=VARCHAR},#{password},-->
+        <!--<if test="telphone!=null">-->
+            <!--#{telphone,jdbcType=VARCHAR},-->
+        <!--</if>-->
+        <!--#{photo})-->
+    <!--</insert>-->
+    <!--<delete id="delete" parameterType="com.taru.bbs.pojo.User">-->
+        <!--delete from user where user_name=#{username,jdbcType=VARCHAR}-->
+    <!--</delete>-->
+
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--<environments default="development">-->
+        <!--<environment id="development">-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--<dataSource type="POOLED">-->
+                <!--<property name="driver" value="com.mysql.cj.jdbc.Driver"/>-->
+                <!--<property name="url" value="jdbc:mysql://localhost:3306/bbc?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone = UTC"/>-->
+                <!--<property name="username" value="root"/>-->
+                <!--<property name="password" value="password"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+<!--启用日志为log4j-->
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="logImpl" value="LOG4J" />
+    </settings>
+    <!-- 方言  特定数据库的SQL的语句 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+        </plugin>
+    </plugins>
+    <!--扫描Mapper-->
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/EssayMapper.xml"/>
+        <mapper resource="mapper/CommentMapper.xml"/>
+        <mapper resource="mapper/Collection.xml"/>
+    </mappers>
+
+
+
+
+
+
+</configuration>

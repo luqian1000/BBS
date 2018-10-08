@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向mapper 包-->
+<mapper namespace="com.taru.bbs.mapper.Collection">
+    <!--返回类型的映射-->
+
+
+    <!--sql片段-->
+    <sql id="UserSql">
+        user_id,user_name,user_password,user_telphone,user_data_time,user_photo
+    </sql>
+    <!--sql片段-->
+    <sql id="EssaySql">
+        essay_id,essay_name,essay_user_id,essay_text,essay_data_time,essay_status
+    </sql>
+    <!--sql片段-->
+    <sql id="CommentSql">
+        comment_id,comment_fa_id,comment_user_id,comment_text,comment_essay_id,comment_status,comment_data_time
+    </sql>
+
+    <!--评论-->
+    <insert id="insertCol" parameterType="java.lang.String">
+        insert INTO collection values(UUID(),#{essayid},#{userid},1,now())
+    </insert>
+    <!--根据用户ID查收藏-->
+    <!--查出收藏的全部贴子包括发表贴子的用户信息，贴子的类别，贴子的详细信息-->
+    <select id="selectCol" parameterType="java.lang.String" resultType="java.util.HashMap">
+        select ca.*,fa.*,c.*,e.* from collection c
+                 left join user u on u.user_id=c.col_user_id
+                 left join essay e on c.col_essay_id=e.essay_id
+                 left join category ca on ca.category_id=e.essay_category_id
+                 LEFT JOIN user fa on essay_user_id=fa.user_id
+                 where u.user_id=#{userid} and col_status=1 order by col_datetime desc
+</select>
+    <!--根据用户ID,贴子id查收藏-->
+    <select id="selectOneCol" resultType="java.util.HashMap">
+        select *from collection where col_user_id=#{userid} and col_essay_id=#{essayid}
+    </select>
+
+
+</mapper>

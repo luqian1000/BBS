@@ -1,0 +1,207 @@
+/* һ��div��һ����ǩ������ǩ��λ����margin-left -right ǰ���Ǳ�ǩ�����ƶ���div���ƵĻ���float��left��rightһ�� */
+/* ��ˮƽ������text-align:center; */
+
+#a{
+	background-color:white;
+	height:67px;
+	width:100%;
+	border:1px solid orange;/* ����border�����ôд */
+}
+.a1{
+	margin-left:265px;
+	/* �����float:left div��ǩλ�ò��ǿ��Ըı��; */
+	float:left;
+	/* background-color:red; */
+
+}
+.a2{
+	margin-left:265px;
+	/* �����float:left div��ǩλ�ò��ǿ��Ըı��; */
+	float:right;
+	/* background-color:orange; */
+	margin-right:265px;
+	margin-top:45px;
+	color:#999999;
+	font-size:13px;
+
+}
+#b{
+	width:100%;
+	height:30px;
+	background-color:#fff8f0;
+	
+
+}
+.b1{
+	width:100%;
+	height:30px;
+	line-height:30px;
+	/* �����float:left div��ǩλ�ò��ǿ��Ըı��; */
+	float:left;
+	text-align:center;
+	color:#999999;
+	font-size:12px;
+	/* background-color:red; */
+
+}
+.b2{
+	width:100%;
+	height:513px;
+	/* �����float:left div��ǩλ�ò��ǿ��Ըı��; */
+	float:left;
+	background-image:url(../img/datu.jpg);
+	background-size:cover;/* ����ͼ����Ӧdiv�Ĵ�С */
+
+
+}
+#c{
+	position:absolute;
+	float:left;
+	width:430px;
+	height:500px;
+	background-color:white; 
+	right:200px;
+	top:100px; 
+
+}
+
+
+
+.input-box{
+	padding:15px;
+	/* background-color:black; */
+	width:280px;
+
+}
+.user{
+	
+	float:left;
+	width:50px;
+	height:50px;
+	background-image:url(../img/login.png) ;
+	/* background-color:black; */
+	background-size:cover;
+
+}
+.user1{
+    margin-left:0px;
+	float:left;
+	width:200px;
+	height:30px;
+	/* background-color:black; */
+
+}
+.c1{
+	margin-top:30px;
+	margin-left:41%;
+
+    width:80%;
+	height:80px;
+	/* background-color:red; */
+	}
+.c2{
+	margin-top:50px;
+	margin-left:41%;
+    
+	height:80px;
+	/* background-color:red; */
+	}
+
+.pass{
+	
+	float:left;
+	width:50px;
+	height:50px;
+	background:url(../img/login1.png) ;
+	/* background-color:black; */
+	background-size:cover;
+
+}
+.pass1{
+	margin-left:0px;
+	float:left;
+	width:200px;
+	height:30px;
+
+	/* background-color:black; */
+
+}
+.top{
+   background-color:#fff8f0;
+   width:100%;
+   height:45px;
+   font-size:15px;
+   line-height:45px;
+   text-align:center;
+}
+.login{
+/* 	background-color:blue; */
+	width:100%;
+	height:65px;
+	 line-height:65px; /* ��Ҫ�ڲ��������¾�����ʾ��ֻ�������div�������иߺ�div�߶���Ⱦ��� */
+	border-bottom:2px solid gray;
+}
+.login-sao{
+	float:left;
+	width:48%;
+	
+	border-right:2px solid gray;
+	/* background-color:green; */
+}
+.login-sao h2{
+	 text-align:center; 
+}
+.login-mi{
+	width:43%;
+	float:left;
+
+
+}
+.login-mi h2{
+text-align:center;/* ��ˮƽ������text-align:center; */
+
+}
+/*去掉a标签下划线*/
+a{
+	text-decoration:none;
+	/*块状*/
+	display:block;
+	background-color:#f6007d;
+	width:50px;
+	text-align: center;
+	color: #000;
+    height: 50px;
+    line-height: 50px;
+
+}
+.button{
+
+width:17.5%;
+height:50px;
+text-align:center;
+background-color:#f6007d; 
+}
+.button h2{
+height:50px;
+line-height:50px;
+text-align:center;
+}
+.qqww{
+	float:left;
+
+}
+.qqww ul{
+	
+
+}
+.qqww ul li{
+	float:left;
+	margin-top:20px;
+}
+.zhuc{
+	float:right;
+}
+.zhuc h4{
+	margin-right:65px;
+	margin-top:20px;
+}
