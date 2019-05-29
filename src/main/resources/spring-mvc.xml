@@ -24,6 +24,7 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
     </bean>
     <!-- 对静态资源文件的访问 方案二 （二选一）  有三种方案  可以激活Tomcat的defaultServlet来处理静态文件     -->
+    <!--<mvc:resources mapping="/webapp/static/**" location="/static/" cache-period="31556926"/>-->
     <mvc:resources mapping="/static/images/**" location="/static/images/" cache-period="31556926"/>
     <mvc:resources mapping="/static/js/**" location="/static/js/" cache-period="31556926"/>
     <mvc:resources mapping="/static/css/**" location="/static/css/" cache-period="31556926"/>
